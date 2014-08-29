@@ -248,7 +248,7 @@ void control :: main_menu(void)
 			edit_menu() ;
 		else
 		if (ch == '6')
-			help() ;
+			//should call main box again
 		else
 		if (ch == '0')
 			break ;
