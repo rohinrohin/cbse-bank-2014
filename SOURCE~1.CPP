@@ -390,6 +390,7 @@ int control::login_box(void)
 	s.boxa(25, 11, 55, 16);
 	gotoxy(28, 11);
 	cout << "Enter Login Credentials";
+	textcolor(WHITE);
 	gotoxy(30, 13);
 	cout << "USERNAME: ";
 	gotoxy(30, 14);
@@ -422,6 +423,7 @@ int control::login_box(void)
 		textcolor(RED);
 		textbackground(BLACK);
 		cprintf("LOGIN UNSUCCESSFULL!, TRY AGAIN... ");
+		textcolor(BLINK+RED);
 		delay(1000);
 		goto start;
 	}
