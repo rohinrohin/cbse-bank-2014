@@ -247,7 +247,7 @@ void control :: main_menu(void)
 		if (ch == '5')
 			edit_menu() ;
 		else
-		if (ch == '6')
+		if (ch == '6') ;
 			//should call main box againd
 		else
 		if (ch == '0')
@@ -1593,7 +1593,16 @@ void main(){
 	a.startup_menu();
 	a.login_box();
 	a.main_menu();
-	
+	clrscr();
+	a.startup_box();
+	gotoxy(19, 12);
+	textcolor(GREEN); textbackground(BLACK);
+	cprintf("Thanks for using our Encrypted Banking System.");
+	gotoxy(24, 13);
+	cprintf("We hope to see you soon =)");
+	textcolor(BLINK + LIGHTBLUE); textbackground(BLACK);
+	gotoxy(30, 24);
+	cprintf("HAVE A GREAT DAY!");
 	getch();
 
-} 
+}
