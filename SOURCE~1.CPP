@@ -1,3 +1,15 @@
+/*------------------iBank Encrypted Management Portal-------------------------
+**
+**	 -  Encrypted bank management system created in c++ for storing and managing
+**  all bank data. All data is encrypted using a salt and saved so that there
+**  is no data leak possible.
+**   -  Developed as a CBSE project for the year 2014-2015
+**
+**---------DEVELOPED BY ROHIN G, ARKO KUNDU, VIKAS AND PRANJAL MEHTA-----------
+*/
+
+
+//header files
 #include<iostream.h>
 #include<fstream.h>
 #include<process.h>
@@ -8,10 +20,7 @@
 #include<conio.h>
 #include<dos.h>
 
-//===========================================================
-//  THIS CLASS CONTAINS FUNCTIONS RELATED TO DRAW BOX ETC.
-//===========================================================
-
+//contains line shape and box shape functions
 class shape
 {
    public :
@@ -21,10 +30,8 @@ class shape
 };		
 
 
-//===========================================================
-//     THIS CLASS CONTROL ALL THE FUNCTIONS IN THE MENU
-//===========================================================
 
+//controls all the menu  and boxes in the program
 class control
 {
   public :
@@ -33,6 +40,7 @@ class control
   		void startup_box(void);
   		void main_menu(void);
 	   	void startup_menu(void);
+	   	void exit_menu(void);
   private:
 	  	void edit_menu(void);
 };
@@ -40,10 +48,7 @@ class control
 
 
 
-//**********************************************************
-// THIS CLASS CONTAINS FUNCTIONS RELATED TO INITIAL DEPOSIT
-//**********************************************************
-
+//contains functions related to initial deposit
 class initial
 {
 	public :
@@ -69,10 +74,7 @@ class initial
 };
 
 
-//**********************************************************
-// THIS CLASS CONTAINS FUNCTIONS RELATED TO TRANSACTIONS
-//**********************************************************
-
+// contains functions related to transaction
 class account
 {
 	public :
@@ -90,40 +92,22 @@ class account
 			void  box_for_display(int);
 
 			int   accno;
-			char  type[10];    // Cheque or Cash       //
-			int   dd, mm, yy;  // Date                 //
-			char  tran;	    // Deposit or Withdraw  //
+			char  type[10];    // Cheque or Cash      
+			int   dd, mm, yy;  // Date
+			char  tran;	    // Deposit or Withdraw
 			float interest, amount, balance;
 };
 
 
-//**********************************************************
-// FUNCTION TO DRAW BOX LINE
-//**********************************************************
-
+//function to draw a box based on dos co-ordinates.
 void shape :: box(int column1, int row1, int column2, int row2)
 {
-	char ch=218;
 	char c1, c2, c3, c4;
 	char l1=196, l2=179;
-	if (c == ch)
-	{
-		c1=218;
-		c2=191;
-		c3=192;
-		c4=217;
-		l1 = 196;
-		l2 = 179;
-	}
-	else
-	{
-		c1=c;
-		c2=c;
-		c3=c;
-		c4=c;
-		l1 = c;
-		l2 = c;
-	}
+	c1=218;
+	c2=191;
+	c3=192;
+	c4=217;
 	gotoxy(column1,row1);
 	cout<<c1;
 	gotoxy(column2,row1);
@@ -146,11 +130,7 @@ void shape :: box(int column1, int row1, int column2, int row2)
 
 
 
-
-//===========================================================
-//     FUNCTION TO DRAW HORIZONTAL LINE
-//===========================================================
-
+//function to draw horizontal line
 void shape::line_hor(int column1,int column2,int row,char c)
 {
 
@@ -161,10 +141,7 @@ void shape::line_hor(int column1,int column2,int row,char c)
     }
 }
 
-//===========================================================
-//             FUNCTION TO DRAW VERTICAL LINE
-//===========================================================
-
+//function to draw vertical line
 void shape::line_ver(int row1,int row2,int column,char c)
 {
 for(row1;row1<=row2;row1++)
@@ -176,10 +153,10 @@ for(row1;row1<=row2;row1++)
 }
 
 
-//**********************************************************
-// FUNCTION TO DISPLAY MAIN MENU AND CALL OTHER FUNCTIONS
-//**********************************************************
 
+
+//funciton to display main menu and call functions
+//based on user input
 void control :: main_menu(void)
 {
 	char ch;
@@ -190,7 +167,7 @@ void control :: main_menu(void)
 
 		s.box(9,4,72,22);
 
- 		textcolor(LIGHTBLUE);
+		textcolor(LIGHTBLUE);
 		textbackground(BLUE);
 			gotoxy(32,7);
 		cprintf(" B A N K I N G ");
@@ -217,40 +194,37 @@ void control :: main_menu(void)
 		ch = getche();
 		if (ch == 27)
 			break;
-		else
-		if (ch == '1')
+		else if (ch == '1')
 		{
 			account a;
 			a.display_account();
 		}
-		else
-		if (ch == '2')
+		else if (ch == '2')
 		{
 			initial ini;
 			ini.display_list();
 		}
-		else
-		if (ch == '3')
+		else if (ch == '3')
 		{
 			account a;
 			a.transaction();
 		}
-		else
-		if (ch == '4')
+		else if (ch == '4')
 		{
 			account a;
 			a.new_account();
 		}
-		else
-		if (ch == '5')
+		else if (ch == '5')
 			edit_menu();
-		else
-		if (ch == '6');
-			//should call main box againd
-		else
-		if (ch == '0')
-			break;
+		else if (ch == '6')
+		{
+			control q;
+			q.startup_menu();
+			q.main_menu();
+		}
+		else if (ch == '0') break;
 	}
+
 	for (int i=25; i>=1; i--)
 	{
 		delay(40);
@@ -259,10 +233,8 @@ void control :: main_menu(void)
 }
 
 
-//**********************************************************
-// FUNCTION TO DISPLAY EDIT MENU AND CALL OTHER FUNCTIONS
-//**********************************************************
 
+//funciton to display edit sub-menu
 void control :: edit_menu(void)
 {
 	char ch;
@@ -309,82 +281,37 @@ void control :: edit_menu(void)
 }
 
 
-//============================================================
-//              FUNCTION TO DRAW BOX LINE
-//============================================================
-
-void shape::boxa(int column1,int row1,int column2,int row2)
-{
-
-char c1,c2,c3,c4;
-char l1=196, l2=179;
-
-c1=218; 
-c2=191;
-c3=192;
-c4=217;
-l1=196;
-l2=179;
-
-gotoxy(column1,row1);
-cout<<c1;
-gotoxy(column2,row1);
-cout<<c2;
-gotoxy(column1,row2);
-cout<<c3;
-gotoxy(column2,row2);
-cout<<c4;
-
-column1++;
-column2--;
-line_hor(column1,column2,row1,l1);
-line_hor(column1,column2,row2,l1);
-column1--;
-column2++;
-row1++;
-row2--;
-line_ver(row1,row2,column1,l2);
-line_ver(row1,row2,column2,l2);
-
-}
-
-//=============================================================
-//           FUNCTION TO DRAW STARTUP AND MAIN BOX
-//=============================================================
- 
+//function to draw startup box(main page)
 void control::startup_box(void)
 {
 	clrscr();
 	shape s;
-	s.boxa(5, 2, 75, 24);
+	s.box(5, 2, 75, 24);
 	gotoxy (22, 2);
 	textbackground(LIGHTBLUE);
 	textcolor(WHITE);
 	cprintf("iBank Encrypted Management Portal");
 }
 
-
+//i forgot, have to seee what this funciton does
 void control::main_box(void)
 {
 	clrscr();
 	shape s;
-	s.boxa(10, 2, 40, 24);
+	s.box(10, 2, 40, 24);
 	gotoxy (22, 2);
 	textbackground(LIGHTBLUE);
 	textcolor(WHITE);
 	cprintf("iBank Encrypted Management Portal");
 }
 
-//=============================================================
-//       FUNCTION TO DRAW LOGIN BOX AND AUTHENTICATE
-//=============================================================
- 
+//function to draw login box and authenticate
 int control::login_box(void)
 {
 	start:
 	shape s;
 	startup_box();
-	s.boxa(25, 11, 55, 16);
+	s.box(25, 11, 55, 16);
 	gotoxy(28, 11);
 	cout << "Enter Login Credentials";
 	textcolor(WHITE);
@@ -427,10 +354,7 @@ int control::login_box(void)
 }
 
  
-//=============================================================
-//           FUNCTION TO DISPLAY HELP ABOUT PROJECT
-//=============================================================
- 
+//function display initial help, and startup
 void control::startup_menu(void)
 {
 clrscr();
@@ -472,11 +396,8 @@ textcolor(WHITE);
 
 
 
-//**********************************************************
-// THIS FUNCTION RETURN LAST ACCOUNT NO. IN THE FILE
-// INITIAL.DAT
-//**********************************************************
 
+//return last account number in initial.dat
 int initial :: last_accno(void)
 {
 	fstream file;
@@ -490,11 +411,9 @@ int initial :: last_accno(void)
 }
 
 
-//**********************************************************
-// THIS FUNCTION RETURN RECORD NO. OF THE GIVEN ACCOUNT NO.
-// IN THE FILE INITIAL.DAT
-//**********************************************************
 
+//function returns record position of the account number, account number is always equal to record number
+//except incase of no record created and initial record it auto-created by code.
 int initial :: recordno(int t_accno)
 {
 	fstream file;
@@ -512,11 +431,7 @@ int initial :: recordno(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION DISPLAY THE ACCOUNT FOR GIVEN ACCOUNT NO.
-// FROM THE FILE INITIAL.DAT
-//**********************************************************
-
+//display all parameters of the account number is initial.dat
 void initial :: display(int t_accno)
 {
 	shape s;
@@ -542,11 +457,8 @@ void initial :: display(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION RETURN NAME FOR THE GIVEN ACCOUNT NO.
-// IN THE FILE INITIAL.DAT
-//**********************************************************
 
+//return name for given account number
 char *initial :: return_name(int t_accno)
 {
 	fstream file;
@@ -566,11 +478,7 @@ char *initial :: return_name(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION RETURN ADDRESS FOR THE GIVEN ACCOUNT NO.
-// IN THE FILE INITIAL.DAT
-//**********************************************************
-
+//return address for the given account number
 char *initial :: return_address(int t_accno)
 {
 	fstream file;
@@ -590,11 +498,7 @@ char *initial :: return_address(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION RETURN BALANCE FOR THE GIVEN ACCOUNT NO.
-// IN THE FILE INITIAL.DAT
-//**********************************************************
-
+// return balance for the given account
 float initial :: give_balance(int t_accno)
 {
 	fstream file;
@@ -614,11 +518,7 @@ float initial :: give_balance(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION RETURN 1 IF THE GIVEN ACCOUNT NO. FOUND
-// IN THE FILE INITIAL.DAT
-//**********************************************************
-
+// check if given account exists #return 1 if true, else 0#
 int initial :: found_account(int t_accno)
 {
 	fstream file;
@@ -637,11 +537,7 @@ int initial :: found_account(int t_accno)
 	return found;
 }
 
-
-//**********************************************************
-// THIS FUNCTION DRAWS THE BOX FOR THE LIST OF ACCOUNTS
-//**********************************************************
-
+//draws box for list
 void initial :: box_for_list()
 {
 	shape s;
@@ -668,11 +564,7 @@ void initial :: box_for_list()
 }
 
 
-//**********************************************************
-// THIS FUNCTION DISPLAYS THE LIST OF ACCOUNTS IN FILE
-// INITIAL.DAT
-//**********************************************************
-
+//displays list of account in initital.dat
 void initial :: display_list(void)
 {
 	clrscr();
@@ -712,11 +604,8 @@ void initial :: display_list(void)
 }
 
 
-//**********************************************************
-// THIS FUNCTION ADDS THE GIVEN DATA INTO THE FILE
-// INITIAL.DAT
-//**********************************************************
 
+// appends given data into initital.dat
 void initial :: add_to_file(int t_accno, char t_name[30], char t_address[60], float t_balance)
 {
 	accno = t_accno;
@@ -730,11 +619,7 @@ void initial :: add_to_file(int t_accno, char t_name[30], char t_address[60], fl
 }
 
 
-//**********************************************************
-// THIS FUNCTION DELETES RECORD FOR THE GIVEN ACOUNT NO.
-// FROM THE FILE INITIAL.DAT
-//**********************************************************
-
+//deletes the record for given account number
 void initial :: delete_account(int t_accno)
 {
 	fstream file;
@@ -767,11 +652,7 @@ void initial :: delete_account(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION UPDATE BALANCE FOR THE GIVEN ACOUNT NO.
-// IN THE FILE INITIAL.DAT
-//**********************************************************
-
+//function to update outstanding balance
 void initial :: update_balance(int t_accno, float t_balance)
 {
 	int recno;
@@ -786,12 +667,7 @@ void initial :: update_balance(int t_accno, float t_balance)
 	file.close();
 }
 
-
-//**********************************************************
-// THIS FUNCTION MODIFIES THE RECORD FOR THE GIVEN DATA
-// IN THE FILE INITIAL.DAT
-//**********************************************************
-
+//modifies the data based on parameters from user for initial.dat
 void initial :: modify_account(int t_accno, char t_name[30], char t_address[60])
 {
 	int recno;
@@ -807,12 +683,7 @@ void initial :: modify_account(int t_accno, char t_name[30], char t_address[60])
 	file.close();
 }
 
-
-//**********************************************************
-// THIS FUNCTION GIVE THE DATA TO MODIFY THE RECORD IN THE
-// FILE INITIAL.DAT
-//**********************************************************
-
+//gives(displays) the data to modify in the modify_accnt function
 void initial :: modify(void)
 {
 	clrscr();
@@ -946,10 +817,7 @@ void initial :: modify(void)
 }
 
 
-//**********************************************************
-// THIS FUNCTION CLEAR THE GIVEN ROW AND COLUMNS
-//**********************************************************
-
+//clear given row and column except for the box 
 void account :: clear(int col, int row)
 {
 	for (int i=col; i<=78; i++)
@@ -960,11 +828,7 @@ void account :: clear(int col, int row)
 }
 
 
-//**********************************************************
-// THIS FUNCTION ADDS THE GIVEN DATA INTO THE FILE
-// BANKING.DAT
-//**********************************************************
-
+//function to write data to banking.dat
 void account :: add_to_file(int t_accno, int d1, int m1, int y1, char t_tran, char t_type[10], float t_interest, float t_amount, float t_balance)
 {
 	fstream file;
@@ -983,11 +847,8 @@ void account :: add_to_file(int t_accno, int d1, int m1, int y1, char t_tran, ch
 }
 
 
-//**********************************************************
-// THIS FUNCTION DELETES THE RECORD FOR GIVIN ACCOUNT NO.
-// FROM FILE BANKING.DAT
-//**********************************************************
 
+//function to delete record no from banking.dat
 void account :: delete_account(int t_accno)
 {
 	fstream file;
@@ -1020,11 +881,7 @@ void account :: delete_account(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION ACCEPTS THE DATA TO ADD RECORDS IN THE
-// FILE BANKING.DAT
-//**********************************************************
-
+//function to add new data to banking.dat
 void account :: new_account(void)
 {
 	char ch;
@@ -1184,11 +1041,7 @@ void account :: new_account(void)
 }
 
 
-//**********************************************************
-// THIS FUNCTION DRAWS THE BOX FOR DISPLAYING RECORD FROM
-// FILE BANKING.DAT
-//**********************************************************
-
+//draws box for 
 void account :: box_for_display(int t_accno)
 {
 	shape s;
@@ -1226,10 +1079,8 @@ void account :: box_for_display(int t_accno)
 }
 
 
-//**********************************************************
-// THIS FUNCTION DISPLAY RECORD FROM THE FILE BANKING.DAT
-//**********************************************************
 
+//display account with box_for_display template.
 void account :: display_account(void)
 {
 	clrscr();
@@ -1240,11 +1091,12 @@ void account :: display_account(void)
 	gotoxy(5,5);
 	cout <<"Enter the account no. ";
 	gets(t_acc);
-	t = atoi(t_acc);
+	t = atoi(t_acc); // converts alphabet input to integer to pass as parameter
 	t_accno = t;
 	if (t_accno == 0)
 		return;
 	clrscr();
+
 	initial ini;
 	
 	box_for_display(t_accno);
@@ -1271,16 +1123,7 @@ void account :: display_account(void)
 			gotoxy(66,row);
 			cout <<balance;
 			row++;
-			if (row == 23)
-			{
-				flag = 1;
-				row = 7;
-				gotoxy(4,24);
-				cout <<"Press any key to continue...";
-				getch();
-				clrscr();
-				box_for_display(t_accno);
-			}
+			//will only work for a max of 23 records - should include for more
 		}
 	}
 	file.close();
@@ -1294,10 +1137,8 @@ void account :: display_account(void)
 }
 
 
-//**********************************************************
-// THIS FUNCTION RETURNS THE DIFFERENCE BETWEEN 2 DATES.
-//**********************************************************
 
+//function to return difference in days between to dates.
 int account :: no_of_days(int d1, int m1, int y1, int d2, int m2, int y2)
 {
 	static int month[] = {31,28,31,30,31,30,31,31,30,31,30,31};
@@ -1321,10 +1162,7 @@ int account :: no_of_days(int d1, int m1, int y1, int d2, int m2, int y2)
 }
 
 
-//**********************************************************
-// THIS FUNCTION CALCULATES INTEREST.
-//**********************************************************
-
+//interest calculator
 float account :: calculate_interest(int t_accno, float t_balance)
 {
 	fstream file;
@@ -1362,10 +1200,8 @@ float account :: calculate_interest(int t_accno, float t_balance)
 }
 
 
-//**********************************************************
-// THIS FUNCTION MAKES TRANSACTIONS (DEPOSIT/WITHDRAW).
-//**********************************************************
 
+// function to make transactions
 void account :: transaction(void)
 {
 	clrscr();
@@ -1508,10 +1344,7 @@ void account :: transaction(void)
 }
 
 
-//**********************************************************
-// THIS FUNCTION CLOSE THE ACCOUNT (DELETE ACCOUNT).
-//**********************************************************
-
+//function to delete account
 void account :: close_account(void)
 {
 	clrscr();
@@ -1581,6 +1414,21 @@ void account :: close_account(void)
 }
 
 
+//displays exit box
+void control::exit_menu(){
+	startup_box();
+	gotoxy(19, 12);
+	textcolor(GREEN); textbackground(BLACK);
+	cprintf("Thanks for using our Encrypted Banking System.");
+	gotoxy(24, 13);
+	cprintf("We hope to see you soon =)");
+	textcolor(BLINK + LIGHTBLUE); textbackground(BLACK);
+	gotoxy(30, 24);
+	cprintf("HAVE A GREAT DAY!");
+	getch();
+
+}
+
 //************************************************************
 // THIS IS MAIN FUNCTION CALLING HELP AND MAIN MENU FUNCTIONS
 //************************************************************
@@ -1591,16 +1439,6 @@ void main(){
 	a.startup_menu();
 	a.login_box();
 	a.main_menu();
-	clrscr();
-	a.startup_box();
-	gotoxy(19, 12);
-	textcolor(GREEN); textbackground(BLACK);
-	cprintf("Thanks for using our Encrypted Banking System.");
-	gotoxy(24, 13);
-	cprintf("We hope to see you soon =)");
-	textcolor(BLINK + LIGHTBLUE); textbackground(BLACK);
-	gotoxy(30, 24);
-	cprintf("HAVE A GREAT DAY!");
-	getch();
+	a.exit_menu();
 
 }
