@@ -8,20 +8,6 @@
 **---------DEVELOPED BY ROHIN G, ARKO KUNDU, VIKAS AND PRANJAL MEHTA-----------
 */
 
-char* sEncrypt(char *a){
-
-  for (int i =0; i < strlen(a); i++)
-  a[i] = a[i] ^ 'x';
-
-  return a;
-}
-
-char* sDecrypt(char *a){
-for (int i=0; i < strlen(a); i++)
-  a[i] = a[i] ^ 'x';
-  return a;
-}
-
 //header files
 #include<iostream.h>
 #include<fstream.h>
@@ -33,6 +19,24 @@ for (int i=0; i < strlen(a); i++)
 #include<conio.h>
 #include<dos.h>
 
+
+int currState = 1;
+//1 - encrypted
+//0 - free data
+
+void sEncrypt(char a[]){;
+  currState = 1;
+  for (int i =0; i < strlen(a); i++)
+  a[i] = a[i] ^ 'x';
+
+}
+
+void sDecrypt(char a[]){;
+	currState = 0;
+    for (int i=0; i < strlen(a); i++)
+    a[i] = a[i] ^ 'x';
+}
+
 //contains line shape and box shape functions
 class shape
 {
@@ -40,7 +44,7 @@ class shape
 	    void line_hor(int, int, int, char);
 	    void line_ver(int, int, int, char);
 	    void box(int,int,int,int);
-};		
+};
 
 
 
@@ -48,14 +52,14 @@ class shape
 class control
 {
   public :
-  		int login_box(void);
-  		void main_box(void);
-  		void startup_box(void);
-  		void main_menu(void);
-	   	void startup_menu(void);
-	   	void exit_menu(void);
+		int login_box(void);
+		void main_box(void);
+		void startup_box(void);
+		void main_menu(void);
+		void startup_menu(void);
+		void exit_menu(void);
   private:
-	  	void edit_menu(void);
+		void edit_menu(void);
 };
 
 
@@ -84,8 +88,9 @@ class initial
 			void  box_for_list(void);
 
 			int   accno;
-			char  name[30], address[60];
+			char  *name, *address;
 			float balance;
+
 };
 
 
@@ -459,8 +464,9 @@ void initial :: display(int t_accno)
 	file.open("INITIAL.DAT", ios::in);
 	file.seekg(0,ios::beg);
 	while (file.read((char *) this, sizeof(initial)))
-	{
+	{	gotoxy(0, 0); cout << address;
 		decrypt();
+		gotoxy(2, 0); cout << address;
 		if (t_accno == accno)
 		{
 			gotoxy(8,5);
@@ -468,7 +474,7 @@ void initial :: display(int t_accno)
 			gotoxy(10,8);
 			cout <<"Name    : "<<name;
 			gotoxy(10,9);
-			cout <<"Address : " <<address;
+			cout <<"Address : " <<address << "EMPTY?";
 			gotoxy(10,10);
 			cout <<"Balance : " <<balance;
 			break;
@@ -565,6 +571,7 @@ int initial :: found_account(int t_accno)
 //draws box for list
 void initial :: box_for_list()
 {
+	decrypt();
 	shape s;
 	s.box(2,1,79,25);
 	s.line_hor(3,78,3,196);
@@ -634,6 +641,7 @@ void initial :: display_list(void)
 // appends given data into initital.dat
 void initial :: add_to_file(int t_accno, char t_name[30], char t_address[60], float t_balance)
 {
+
 	accno = t_accno;
 	strcpy(name,t_name);
 	strcpy(address,t_address);
@@ -854,16 +862,21 @@ void initial :: modify(void)
 	getch();
 }
 
+
 // will encrpyt all string data members
 void initial :: encrypt(){
-	name = sEncrypt(name);
-	address = sEncrypt(address);
+	if (currState == 0){
+		sEncrypt(name);
+		sEncrypt(address);
+	}
 }
 
 //will decrypt all string data members
 void initial :: decrypt(){
-	name = sDecrypt(name);
-	address = sDecrypt(address);
+	if (currState == 1){
+		sDecrypt(name);
+		sDecrypt(address);
+	}
 }
 
 

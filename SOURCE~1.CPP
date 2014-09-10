@@ -8,7 +8,6 @@
 **---------DEVELOPED BY ROHIN G, ARKO KUNDU, VIKAS AND PRANJAL MEHTA-----------
 */
 
-
 //header files
 #include<iostream.h>
 #include<fstream.h>
@@ -20,6 +19,20 @@
 #include<conio.h>
 #include<dos.h>
 
+
+char* sEncrypt(char *a){
+
+  for (int i =0; i < strlen(a); i++)
+  a[i] = a[i] ^ 'x';
+
+  return a;
+}
+
+char* sDecrypt(char *a){
+for (int i=0; i < strlen(a); i++)
+  a[i] = a[i] ^ 'x';
+  return a;
+}
 //contains line shape and box shape functions
 class shape
 {
@@ -27,7 +40,7 @@ class shape
 	    void line_hor(int, int, int, char);
 	    void line_ver(int, int, int, char);
 	    void box(int,int,int,int);
-};		
+};
 
 
 
@@ -35,14 +48,14 @@ class shape
 class control
 {
   public :
-  		int login_box(void);
-  		void main_box(void);
-  		void startup_box(void);
-  		void main_menu(void);
-	   	void startup_menu(void);
-	   	void exit_menu(void);
+		int login_box(void);
+		void main_box(void);
+		void startup_box(void);
+		void main_menu(void);
+		void startup_menu(void);
+		void exit_menu(void);
   private:
-	  	void edit_menu(void);
+		void edit_menu(void);
 };
 
 
@@ -52,6 +65,8 @@ class control
 class initial
 {
 	public :
+			void encrypt();
+			void decrypt();
 			void add_to_file(int, char t_name[30], char t_address[60], float);
 			void display_list(void);
 			void delete_account(int);
@@ -69,7 +84,7 @@ class initial
 			void  box_for_list(void);
 
 			int   accno;
-			char  name[30], address[60];
+			char  *name, *address;
 			float balance;
 };
 
@@ -405,7 +420,10 @@ int initial :: last_accno(void)
 	file.seekg(0,ios::beg);
 	int count=0;
 	while (file.read((char *) this, sizeof(initial)))
+	{   
+		decrypt();
 		count = accno;
+	}
 	file.close();
 	return count;
 }
@@ -420,8 +438,10 @@ int initial :: recordno(int t_accno)
 	file.open("INITIAL.DAT", ios::in);
 	file.seekg(0,ios::beg);
 	int count=0;
+
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		count++;
 		if (t_accno == accno)
 			break;
@@ -440,6 +460,7 @@ void initial :: display(int t_accno)
 	file.seekg(0,ios::beg);
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		if (t_accno == accno)
 		{
 			gotoxy(8,5);
@@ -467,6 +488,7 @@ char *initial :: return_name(int t_accno)
 	char t_name[30];
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		if (accno == t_accno)
 		{
 			strcpy(t_name,name);
@@ -487,6 +509,7 @@ char *initial :: return_address(int t_accno)
 	char t_address[60];
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		if (accno == t_accno)
 		{
 			strcpy(t_address,address);
@@ -507,6 +530,7 @@ float initial :: give_balance(int t_accno)
 	float t_balance;
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		if (accno == t_accno)
 		{
 			t_balance = balance;
@@ -527,6 +551,7 @@ int initial :: found_account(int t_accno)
 	int found=0;
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		if (accno == t_accno)
 		{
 			found = 1;
@@ -574,6 +599,7 @@ void initial :: display_list(void)
 	file.open("INITIAL.DAT", ios::in);
 	while (file.read((char *) this, sizeof(initial)))
 	{
+		decrypt();
 		flag = 0;
 		delay(10);
 		gotoxy(7,row);
@@ -614,8 +640,10 @@ void initial :: add_to_file(int t_accno, char t_name[30], char t_address[60], fl
 	balance = t_balance;
 	fstream file;
 	file.open("INITIAL.DAT", ios::out | ios::app);
+	encrypt();
 	file.write((char *) this, sizeof(initial));
 	file.close();
+	decrypt();
 }
 
 
@@ -629,11 +657,15 @@ void initial :: delete_account(int t_accno)
 	file.seekg(0,ios::beg);
 	while ( !file.eof() )
 	{
-		file.read((char *) this, sizeof(initial));
+		file.read((char *) this, sizeof(initial)); decrypt();
 		if ( file.eof() )
 			break;
 		if ( accno != t_accno )
+		{
+			encrypt();
 			temp.write((char *) this, sizeof(initial));
+			decrypt();
+		}
 	}
 	file.close();
 	temp.close();
@@ -642,10 +674,12 @@ void initial :: delete_account(int t_accno)
 	temp.seekg(0,ios::beg);
 	while ( !temp.eof() )
 	{
-		temp.read((char *) this, sizeof(initial));
+		temp.read((char *) this, sizeof(initial)); decrypt();
 		if ( temp.eof() )
 			break;
+		encrypt();
 		file.write((char *) this, sizeof(initial));
+		decrypt();
 	}
 	file.close();
 	temp.close();
@@ -663,7 +697,9 @@ void initial :: update_balance(int t_accno, float t_balance)
 	int location;
 	location = (recno-1) * sizeof(initial);
 	file.seekp(location);
+	encrypt();
 	file.write((char *) this, sizeof(initial));
+	decrypt();
 	file.close();
 }
 
@@ -679,7 +715,9 @@ void initial :: modify_account(int t_accno, char t_name[30], char t_address[60])
 	int location;
 	location = (recno-1) * sizeof(initial);
 	file.seekp(location);
+	encrypt();
 	file.write((char *) this, sizeof(initial));
+	decrypt();
 	file.close();
 }
 
@@ -815,6 +853,20 @@ void initial :: modify(void)
 	cout <<"Press any key to continue...";
 	getch();
 }
+
+// will encrpyt all string data members
+void initial :: encrypt(){;
+//	name = sEncrypt(name);
+//	address = sEncrypt(address);
+}
+
+//will decrypt all string data members
+void initial :: decrypt(){;
+	//name = sDecrypt(name);
+	//address = sDecrypt(address);
+}
+
+
 
 
 //clear given row and column except for the box 
