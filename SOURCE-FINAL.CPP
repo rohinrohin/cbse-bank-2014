@@ -1,12 +1,13 @@
-/*------------------iBank Encrypted Management Portal-------------------------
+/*------------------iBank Encrypted Management Portal-----------------------------
 **
 **	 -  Encrypted bank management system created in c++ for storing and managing
-**  all bank data. All data is encrypted using a salt and saved so that there
-**  is no data leak possible.
+**      all bank data. All data is encrypted using a salt and saved so that there
+**      is no data leak possible.
 **   -  Developed as a CBSE project for the year 2014-2015
 **
-**---------DEVELOPED BY ROHIN G, ARKO KUNDU, VIKAS AND PRANJAL MEHTA-----------
+**---------DEVELOPED BY ROHIN G, ARKO KUNDU, VIKAS AND PRANJAL MEHTA---------------
 */
+
 
 //header files
 #include<iostream.h>
@@ -24,6 +25,9 @@ int currState = 1;
 //1 - encrypted
 //0 - free data
 
+
+
+//handles encryption of file
 void sEncrypt(char a[]){;
   currState = 1;
   for (int i =0; i < strlen(a); i++)
@@ -31,25 +35,27 @@ void sEncrypt(char a[]){;
 
 }
 
+//handles decrytion
 void sDecrypt(char a[]){;
 	currState = 0;
     for (int i=0; i < strlen(a); i++)
     a[i] = a[i] ^ 'x';
 }
 
+
 //contains line shape and box shape functions
 class shape
 {
    public :
-	    void line_hor(int, int, int, char);
-	    void line_ver(int, int, int, char);
+	    void horizontal_line(int, int, int, char);
+	    void vertical_line(int, int, int, char);
 	    void box(int,int,int,int);
 };
 
 
 
 //controls all the menu  and boxes in the program
-class control
+class ui
 {
   public :
 		int login_box(void);
@@ -66,17 +72,17 @@ class control
 
 
 //contains functions related to initial deposit
-class initial
+class bank
 {
 	public :
-			void encrypt();
 			void decrypt();
-			void add_to_file(int, char t_name[30], char t_address[60], float);
+			void encrypt();
+			void write_to_file(int, char t_name[30], char t_address[60], float);
 			void display_list(void);
 			void delete_account(int);
 			void update_balance(int, float);
 			void modify(void);
-			int  last_accno(void);
+			int  last_accountnumber(void);
 			int  found_account(int);
 			char *return_name(int);
 			char *return_address(int);
@@ -88,14 +94,13 @@ class initial
 			void  box_for_list(void);
 
 			int   accno;
-			char  *name, *address;
+			char  name[30], address[60];
 			float balance;
-
 };
 
 
 // contains functions related to transaction
-class account
+class passbook
 {
 	public :
 			void new_account(void);
@@ -104,7 +109,7 @@ class account
 			void transaction(void);
 			void clear(int,int);
 	private :
-			void  add_to_file(int, int, int, int, char, char t_type[10], float, float, float);
+			void  write_to_file(int, int, int, int, char, char t_type[10], float, float, float);
 			void  delete_account(int);
 			int   no_of_days(int, int, int, int, int, int);
 			float calculate_interest(int, float);
@@ -124,10 +129,13 @@ void shape :: box(int column1, int row1, int column2, int row2)
 {
 	char c1, c2, c3, c4;
 	char l1=196, l2=179;
+	
+	//ascii's
 	c1=218;
 	c2=191;
 	c3=192;
 	c4=217;
+	
 	gotoxy(column1,row1);
 	cout<<c1;
 	gotoxy(column2,row1);
@@ -138,20 +146,20 @@ void shape :: box(int column1, int row1, int column2, int row2)
 	cout <<c4;
 	column1++;
 	column2--;
-	line_hor(column1,column2,row1,l1);
-	line_hor(column1,column2,row2,l1);
+	horizontal_line(column1,column2,row1,l1);
+	horizontal_line(column1,column2,row2,l1);
 	column1--;
 	column2++;
 	row1++;
 	row2--;
-	line_ver(row1,row2,column1,l2);
-	line_ver(row1,row2,column2,l2);
+	vertical_line(row1,row2,column1,l2);
+	vertical_line(row1,row2,column2,l2);
 }
 
 
 
 //function to draw horizontal line
-void shape::line_hor(int column1,int column2,int row,char c)
+void shape::horizontal_line(int column1,int column2,int row,char c)
 {
 
  for(column1; column1<=column2; column1++)
@@ -162,7 +170,7 @@ void shape::line_hor(int column1,int column2,int row,char c)
 }
 
 //function to draw vertical line
-void shape::line_ver(int row1,int row2,int column,char c)
+void shape::vertical_line(int row1,int row2,int column,char c)
 {
 for(row1;row1<=row2;row1++)
    {
@@ -177,7 +185,7 @@ for(row1;row1<=row2;row1++)
 
 //funciton to display main menu and call functions
 //based on user input
-void control :: main_menu(void)
+void ui :: main_menu(void)
 {
 	char ch;
 	while (1)
@@ -216,29 +224,29 @@ void control :: main_menu(void)
 			break;
 		else if (ch == '1')
 		{
-			account a;
+			passbook a;
 			a.display_account();
 		}
 		else if (ch == '2')
 		{
-			initial ini;
+			bank ini;
 			ini.display_list();
 		}
 		else if (ch == '3')
 		{
-			account a;
+			passbook a;
 			a.transaction();
 		}
 		else if (ch == '4')
 		{
-			account a;
+			passbook a;
 			a.new_account();
 		}
 		else if (ch == '5')
 			edit_menu();
 		else if (ch == '6')
 		{
-			control q;
+			ui q;
 			q.startup_menu();
 			q.main_menu();
 		}
@@ -255,7 +263,7 @@ void control :: main_menu(void)
 
 
 //funciton to display edit sub-menu
-void control :: edit_menu(void)
+void ui :: edit_menu(void)
 {
 	char ch;
 	while (1)
@@ -283,14 +291,14 @@ void control :: edit_menu(void)
 		else
 		if (ch == '1')
 		{
-			initial ini;
+			bank ini;
 			ini.modify();
 			break;
 		}
 		else
 		if (ch == '2')
 		{
-			account a;
+			passbook a;
 			a.close_account();
 			break;
 		}
@@ -302,7 +310,7 @@ void control :: edit_menu(void)
 
 
 //function to draw startup box(main page)
-void control::startup_box(void)
+void ui::startup_box(void)
 {
 	clrscr();
 	shape s;
@@ -313,8 +321,8 @@ void control::startup_box(void)
 	cprintf("iBank Encrypted Management Portal");
 }
 
-//i forgot, have to seee what this funciton does
-void control::main_box(void)
+//not used yet, should implement instead of current box
+void ui::main_box(void)
 {
 	clrscr();
 	shape s;
@@ -326,7 +334,7 @@ void control::main_box(void)
 }
 
 //function to draw login box and authenticate
-int control::login_box(void)
+int ui::login_box(void)
 {
 	start:
 	shape s;
@@ -375,7 +383,7 @@ int control::login_box(void)
 
  
 //function display initial help, and startup
-void control::startup_menu(void)
+void ui::startup_menu(void)
 {
 clrscr();
 startup_box();
@@ -418,17 +426,16 @@ textcolor(WHITE);
 
 
 //return last account number in initial.dat
-int initial :: last_accno(void)
+int bank :: last_accountnumber(void)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary);
 	file.seekg(0,ios::beg);
 	int count=0;
-	while (file.read((char *) this, sizeof(initial)))
-	{   
-		decrypt();
-		count = accno;
-	}
+	while (file.read((char *) this, sizeof(bank)))
+		{
+			count = accno;
+		}
 	file.close();
 	return count;
 }
@@ -437,14 +444,13 @@ int initial :: last_accno(void)
 
 //function returns record position of the account number, account number is always equal to record number
 //except incase of no record created and initial record it auto-created by code.
-int initial :: recordno(int t_accno)
+int bank :: recordno(int t_accno)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary );
 	file.seekg(0,ios::beg);
 	int count=0;
-
-	while (file.read((char *) this, sizeof(initial)))
+	while (file.read((char *) this, sizeof(bank)))
 	{
 		decrypt();
 		count++;
@@ -456,17 +462,16 @@ int initial :: recordno(int t_accno)
 }
 
 
-//display all parameters of the account number is initial.dat
-void initial :: display(int t_accno)
+//display all parameters of the account number in initial.dat
+void bank :: display(int t_accno)
 {
 	shape s;
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in| ios::binary);
 	file.seekg(0,ios::beg);
-	while (file.read((char *) this, sizeof(initial)))
-	{	gotoxy(0, 0); cout << address;
+	while (file.read((char *) this, sizeof(bank)))
+	{
 		decrypt();
-		gotoxy(2, 0); cout << address;
 		if (t_accno == accno)
 		{
 			gotoxy(8,5);
@@ -474,7 +479,7 @@ void initial :: display(int t_accno)
 			gotoxy(10,8);
 			cout <<"Name    : "<<name;
 			gotoxy(10,9);
-			cout <<"Address : " <<address << "EMPTY?";
+			cout <<"Address : " <<address;
 			gotoxy(10,10);
 			cout <<"Balance : " <<balance;
 			break;
@@ -486,13 +491,13 @@ void initial :: display(int t_accno)
 
 
 //return name for given account number
-char *initial :: return_name(int t_accno)
+char *bank :: return_name(int t_accno)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary);
 	file.seekg(0,ios::beg);
 	char t_name[30];
-	while (file.read((char *) this, sizeof(initial)))
+	while (file.read((char *) this, sizeof(bank)))
 	{
 		decrypt();
 		if (accno == t_accno)
@@ -507,13 +512,13 @@ char *initial :: return_name(int t_accno)
 
 
 //return address for the given account number
-char *initial :: return_address(int t_accno)
+char *bank :: return_address(int t_accno)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary);
 	file.seekg(0,ios::beg);
 	char t_address[60];
-	while (file.read((char *) this, sizeof(initial)))
+	while (file.read((char *) this, sizeof(bank)))
 	{
 		decrypt();
 		if (accno == t_accno)
@@ -528,13 +533,13 @@ char *initial :: return_address(int t_accno)
 
 
 // return balance for the given account
-float initial :: give_balance(int t_accno)
+float bank :: give_balance(int t_accno)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary);
 	file.seekg(0,ios::beg);
 	float t_balance;
-	while (file.read((char *) this, sizeof(initial)))
+	while (file.read((char *) this, sizeof(bank)))
 	{
 		decrypt();
 		if (accno == t_accno)
@@ -549,13 +554,13 @@ float initial :: give_balance(int t_accno)
 
 
 // check if given account exists #return 1 if true, else 0#
-int initial :: found_account(int t_accno)
+int bank :: found_account(int t_accno)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary);
 	file.seekg(0,ios::beg);
 	int found=0;
-	while (file.read((char *) this, sizeof(initial)))
+	while (file.read((char *) this, sizeof(bank)))
 	{
 		decrypt();
 		if (accno == t_accno)
@@ -569,14 +574,13 @@ int initial :: found_account(int t_accno)
 }
 
 //draws box for list
-void initial :: box_for_list()
+void bank :: box_for_list()
 {
-	decrypt();
 	shape s;
 	s.box(2,1,79,25);
-	s.line_hor(3,78,3,196);
-	s.line_hor(3,78,5,196);
-	s.line_hor(3,78,23,196);
+	s.horizontal_line(3,78,3,196);
+	s.horizontal_line(3,78,5,196);
+	s.horizontal_line(3,78,23,196);
 	textbackground(WHITE);
 	gotoxy(3,4);
 	for (int i=1; i<=76; i++) cprintf(" ");
@@ -597,14 +601,14 @@ void initial :: box_for_list()
 
 
 //displays list of account in initital.dat
-void initial :: display_list(void)
+void bank :: display_list(void)
 {
 	clrscr();
 	box_for_list();
 	int row=6, flag;
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
-	while (file.read((char *) this, sizeof(initial)))
+	file.open("BANK.DAT", ios::in | ios::binary);
+	while (file.read((char *) this, sizeof(bank)))
 	{
 		decrypt();
 		flag = 0;
@@ -639,54 +643,55 @@ void initial :: display_list(void)
 
 
 // appends given data into initital.dat
-void initial :: add_to_file(int t_accno, char t_name[30], char t_address[60], float t_balance)
+void bank :: write_to_file(int t_accno, char t_name[30], char t_address[60], float t_balance)
 {
-
 	accno = t_accno;
 	strcpy(name,t_name);
 	strcpy(address,t_address);
 	balance = t_balance;
 	fstream file;
-	file.open("INITIAL.DAT", ios::out | ios::app);
+	file.open("BANK.DAT", ios::out | ios::app | ios::binary);
 	encrypt();
-	file.write((char *) this, sizeof(initial));
-	file.close();
+		file.write((char *) this, sizeof(bank));
 	decrypt();
+	file.close();
 }
 
 
 //deletes the record for given account number
-void initial :: delete_account(int t_accno)
+void bank :: delete_account(int t_accno)
 {
 	fstream file;
-	file.open("INITIAL.DAT", ios::in);
+	file.open("BANK.DAT", ios::in | ios::binary);
 	fstream temp;
-	temp.open("temp.dat", ios::out);
+	temp.open("temp.dat", ios::out | ios::binary);
 	file.seekg(0,ios::beg);
 	while ( !file.eof() )
 	{
-		file.read((char *) this, sizeof(initial)); decrypt();
+
+		file.read((char *) this, sizeof(bank));
+		decrypt();
+
 		if ( file.eof() )
 			break;
-		if ( accno != t_accno )
-		{
+		if ( accno != t_accno ){
 			encrypt();
-			temp.write((char *) this, sizeof(initial));
+			temp.write((char *) this, sizeof(bank));
 			decrypt();
 		}
 	}
 	file.close();
 	temp.close();
-	file.open("INITIAL.DAT", ios::out);
-	temp.open("temp.dat", ios::in);
+	file.open("BANK.DAT", ios::out | ios::binary);
+	temp.open("temp.dat", ios::in | ios::binary);
 	temp.seekg(0,ios::beg);
 	while ( !temp.eof() )
 	{
-		temp.read((char *) this, sizeof(initial)); decrypt();
+		temp.read((char *) this, sizeof(bank)); decrypt();
 		if ( temp.eof() )
 			break;
 		encrypt();
-		file.write((char *) this, sizeof(initial));
+		file.write((char *) this, sizeof(bank));
 		decrypt();
 	}
 	file.close();
@@ -695,42 +700,42 @@ void initial :: delete_account(int t_accno)
 
 
 //function to update outstanding balance
-void initial :: update_balance(int t_accno, float t_balance)
+void bank :: update_balance(int t_accno, float t_balance)
 {
 	int recno;
 	recno = recordno(t_accno);
 	fstream file;
-	file.open("INITIAL.DAT", ios::out | ios::ate);
+	file.open("BANK.DAT", ios::out | ios::ate | ios::binary);
 	balance = t_balance;
 	int location;
-	location = (recno-1) * sizeof(initial);
+	location = (recno-1) * sizeof(bank);
 	file.seekp(location);
 	encrypt();
-	file.write((char *) this, sizeof(initial));
+	file.write((char *) this, sizeof(bank));
 	decrypt();
 	file.close();
 }
 
-//modifies the data based on parameters from user for initial.dat
-void initial :: modify_account(int t_accno, char t_name[30], char t_address[60])
+//modifies the data based on parameters from user for bank.dat
+void bank:: modify_account(int t_accno, char t_name[30], char t_address[60])
 {
 	int recno;
 	recno = recordno(t_accno);
 	fstream file;
-	file.open("INITIAL.DAT", ios::out | ios::ate);
+	file.open("BANK.DAT", ios::out | ios::ate | ios::binary);
 	strcpy(name,t_name);
 	strcpy(address,t_address);
 	int location;
-	location = (recno-1) * sizeof(initial);
+	location = (recno-1) * sizeof(bank);
 	file.seekp(location);
 	encrypt();
-	file.write((char *) this, sizeof(initial));
+	file.write((char *) this, sizeof(bank));
 	decrypt();
 	file.close();
 }
 
 //gives(displays) the data to modify in the modify_accnt function
-void initial :: modify(void)
+void bank :: modify(void)
 {
 	clrscr();
 	char t_acc[10];
@@ -748,14 +753,14 @@ void initial :: modify(void)
 	if (!found_account(t_accno))
 	{
 		gotoxy(5,5);
-		cout <<"\7Account not found";
+		cout <<"Account not found";
 		getch();
 		return;
 	}
 	shape s;
 	s.box(2,2,79,24);
-	s.line_hor(3,78,4,196);
-	s.line_hor(3,78,22,196);
+	s.horizontal_line(3,78,4,196);
+	s.horizontal_line(3,78,22,196);
 	gotoxy(71,1);
 	cout <<"<0>=Exit";
 	textbackground(BLUE);
@@ -776,7 +781,7 @@ void initial :: modify(void)
 	cout <<"Date: "<<d1 <<"/" <<m1 <<"/" <<y1;
 	char ch;
 	display(t_accno);
-	account a;
+	passbook a;
 	do
 	{
 		a.clear(5,13);
@@ -811,7 +816,7 @@ void initial :: modify(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7NAME SHOULD NOT GREATER THAN 25");
+			cprintf("NAME SHOULD NOT GREATER THAN 25");
 			getch();
 		}
 	} while (!valid);
@@ -833,7 +838,7 @@ void initial :: modify(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7SHOULD NOT BLANK OR GREATER THAN 55");
+			cprintf("SHOULD NOT BLANK OR GREATER THAN 55");
 			getch();
 		}
 	} while (!valid);
@@ -856,34 +861,15 @@ void initial :: modify(void)
 		return;
 	modify_account(t_accno,t_name,t_address);
 	gotoxy(5,21);
-	cout <<"\7Record Modified";
+	cout <<"Record Modified";
 	gotoxy(5,23);
 	cout <<"Press any key to continue...";
 	getch();
 }
 
 
-// will encrpyt all string data members
-void initial :: encrypt(){
-	if (currState == 0){
-		sEncrypt(name);
-		sEncrypt(address);
-	}
-}
-
-//will decrypt all string data members
-void initial :: decrypt(){
-	if (currState == 1){
-		sDecrypt(name);
-		sDecrypt(address);
-	}
-}
-
-
-
-
 //clear given row and column except for the box 
-void account :: clear(int col, int row)
+void passbook :: clear(int col, int row)
 {
 	for (int i=col; i<=78; i++)
 	{
@@ -893,11 +879,32 @@ void account :: clear(int col, int row)
 }
 
 
+// will encrpyt all string data members
+void bank :: encrypt(){
+	if (currState == 0){
+		sEncrypt(name);
+		sEncrypt(address);
+	}
+}
+
+//will decrypt all string data members
+void bank :: decrypt(){
+
+		sDecrypt(name);
+		sDecrypt(address);
+	}
+
+
+
+// ----------- INITIAL ENDS HERE ------------------------ //
+
+
+
 //function to write data to banking.dat
-void account :: add_to_file(int t_accno, int d1, int m1, int y1, char t_tran, char t_type[10], float t_interest, float t_amount, float t_balance)
+void passbook :: write_to_file(int t_accno, int d1, int m1, int y1, char t_tran, char t_type[10], float t_interest, float t_amount, float t_balance)
 {
 	fstream file;
-	file.open("BANKING.DAT", ios::app);
+	file.open("BANKING.DAT", ios::app | ios::binary);
 	accno = t_accno;
 	dd = d1;
 	mm = m1;
@@ -907,39 +914,39 @@ void account :: add_to_file(int t_accno, int d1, int m1, int y1, char t_tran, ch
 	interest = t_interest;
 	amount = t_amount;
 	balance = t_balance;
-	file.write((char *) this, sizeof(account));
+	file.write((char *) this, sizeof(passbook));
 	file.close();
 }
 
 
 
 //function to delete record no from banking.dat
-void account :: delete_account(int t_accno)
+void passbook :: delete_account(int t_accno)
 {
 	fstream file;
-	file.open("BANKING.DAT", ios::in);
+	file.open("BANKING.DAT", ios::in | ios::binary);
 	fstream temp;
-	temp.open("temp.dat", ios::out);
+	temp.open("temp.dat", ios::out | ios::binary);
 	file.seekg(0,ios::beg);
 	while ( !file.eof() )
 	{
-		file.read((char *) this, sizeof(account));
+		file.read((char *) this, sizeof(passbook));
 		if ( file.eof() )
 			break;
 		if ( accno != t_accno )
-			temp.write((char *) this, sizeof(account));
+			temp.write((char *) this, sizeof(passbook));
 	}
 	file.close();
 	temp.close();
-	file.open("BANKING.DAT", ios::out);
-	temp.open("temp.dat", ios::in);
+	file.open("BANKING.DAT", ios::out | ios::binary);
+	temp.open("temp.dat", ios::in | ios::binary);
 	temp.seekg(0,ios::beg);
 	while ( !temp.eof() )
 	{
-		temp.read((char *) this, sizeof(account));
+		temp.read((char *) this, sizeof(passbook));
 		if ( temp.eof() )
 			break;
-		file.write((char *) this, sizeof(account));
+		file.write((char *) this, sizeof(passbook));
 	}
 	file.close();
 	temp.close();
@@ -947,16 +954,16 @@ void account :: delete_account(int t_accno)
 
 
 //function to add new data to banking.dat
-void account :: new_account(void)
+void passbook :: new_account(void)
 {
 	char ch;
 	int i, valid;
 	clrscr();
-	initial ini;
+	bank ini;
 	shape s;
 	s.box(2,2,79,24);
-	s.line_hor(3,78,4,196);
-	s.line_hor(3,78,22,196);
+	s.horizontal_line(3,78,4,196);
+	s.horizontal_line(3,78,22,196);
 	gotoxy(71,1);
 	cout <<"<0>=Exit";
 	textbackground(BLUE);
@@ -975,13 +982,13 @@ void account :: new_account(void)
 	m1 = d.da_mon;
 	y1 = d.da_year;
 	int t_accno;
-	t_accno = ini.last_accno();
+	t_accno = ini.last_accountnumber();
 	t_accno++;
 	if (t_accno == 1)
 	{
-		ini.add_to_file(t_accno,"abc","xyz",1.1);
+		ini.write_to_file(t_accno,"abc","xyz",1.1);
 		ini.delete_account(t_accno);
-		add_to_file(t_accno,1,1,1997,'D',"INITIAL",1.1,1.1,1.1);
+		write_to_file(t_accno,1,1,1997,'D',"INITIAL",1.1,1.1,1.1);
 		delete_account(t_accno);
 	}
 	char t_name[30], t[10], t_address[60];
@@ -1015,7 +1022,7 @@ void account :: new_account(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7NAME SHOULD NOT BLANK OR GREATER THAN 25");
+			cprintf("NAME SHOULD NOT BLANK OR GREATER THAN 25");
 			getch();
 		}
 	} while (!valid);
@@ -1035,7 +1042,7 @@ void account :: new_account(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7SHOULD NOT BLANK OR GREATER THAN 55");
+			cprintf("SHOULD NOT BLANK OR GREATER THAN 55");
 			getch();
 		}
 	} while (!valid);
@@ -1056,7 +1063,7 @@ void account :: new_account(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7SHOULD NOT BLANK OR GREATER THAN 25");
+			cprintf("SHOULD NOT BLANK OR GREATER THAN 25");
 			getch();
 		}
 	} while (!valid);
@@ -1077,7 +1084,7 @@ void account :: new_account(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7SHOULD NOT LESS THAN 500          ");
+			cprintf("SHOULD NOT LESS THAN 500          ");
 			getch();
 		}
 	} while (!valid);
@@ -1101,19 +1108,19 @@ void account :: new_account(void)
 	char t_tran, t_type[10];
 	t_tran = 'D';
 	strcpy(t_type,"INITIAL");
-	ini.add_to_file(t_accno,t_name,t_address,t_balance);
-	add_to_file(t_accno,d1,m1,y1,t_tran,t_type,t_interest,t_amount,t_balance);
+	ini.write_to_file(t_accno,t_name,t_address,t_balance);
+	write_to_file(t_accno,d1,m1,y1,t_tran,t_type,t_interest,t_amount,t_balance);
 }
 
 
-//draws box for 
-void account :: box_for_display(int t_accno)
+//draws box for display
+void passbook :: box_for_display(int t_accno)
 {
 	shape s;
 	s.box(2,1,79,25);
-	s.line_hor(3,78,4,196);
-	s.line_hor(3,78,6,196);
-	s.line_hor(3,78,23,196);
+	s.horizontal_line(3,78,4,196);
+	s.horizontal_line(3,78,6,196);
+	s.horizontal_line(3,78,23,196);
 	textbackground(BLUE);
 	gotoxy(3,5);
 	for (int i=1; i<=76; i++) cprintf(" ");
@@ -1132,7 +1139,7 @@ void account :: box_for_display(int t_accno)
 	cout <<"Date: " <<d1 <<"/" <<m1 <<"/" <<y1;
 	gotoxy(4,2);
 	cout <<"Account no. " <<t_accno;
-	initial ini;
+	bank ini;
 	char t_name[30];
 	strcpy(t_name,ini.return_name(t_accno));
 	char t_address[60];
@@ -1146,7 +1153,7 @@ void account :: box_for_display(int t_accno)
 
 
 //display account with box_for_display template.
-void account :: display_account(void)
+void passbook :: display_account(void)
 {
 	clrscr();
 	char t_acc[10];
@@ -1162,13 +1169,13 @@ void account :: display_account(void)
 		return;
 	clrscr();
 
-	initial ini;
+	bank ini;
 	
 	box_for_display(t_accno);
 	int row=7, flag;
 	fstream file;
-	file.open("BANKING.DAT", ios::in);
-	while (file.read((char *) this, sizeof(account)))
+	file.open("BANKING.DAT", ios::in | ios::binary);
+	while (file.read((char *) this, sizeof(passbook)))
 	{
 		if (accno == t_accno)
 		{
@@ -1204,7 +1211,7 @@ void account :: display_account(void)
 
 
 //function to return difference in days between to dates.
-int account :: no_of_days(int d1, int m1, int y1, int d2, int m2, int y2)
+int passbook :: no_of_days(int d1, int m1, int y1, int d2, int m2, int y2)
 {
 	static int month[] = {31,28,31,30,31,30,31,31,30,31,30,31};
 	int days = 0;
@@ -1228,13 +1235,13 @@ int account :: no_of_days(int d1, int m1, int y1, int d2, int m2, int y2)
 
 
 //interest calculator
-float account :: calculate_interest(int t_accno, float t_balance)
+float passbook :: calculate_interest(int t_accno, float t_balance)
 {
 	fstream file;
-	file.open("BANKING.DAT", ios::in);
+	file.open("BANKING.DAT", ios::in | ios::binary);
 	file.seekg(0,ios::beg);
 	int d1, m1, y1, days;
-	while (file.read((char *) this, sizeof(account)))
+	while (file.read((char *) this, sizeof(passbook)))
 	{
 		if (accno == t_accno)
 		{
@@ -1267,7 +1274,7 @@ float account :: calculate_interest(int t_accno, float t_balance)
 
 
 // function to make transactions
-void account :: transaction(void)
+void passbook :: transaction(void)
 {
 	clrscr();
 	char t_acc[10];
@@ -1282,18 +1289,18 @@ void account :: transaction(void)
 	if (t_accno == 0)
 		return;
 	clrscr();
-	initial ini;
+	bank ini;
 	if (!ini.found_account(t_accno))
 	{
 		gotoxy(5,5);
-		cout <<"\7Account not found";
+		cout <<"Account not found";
 		getch();
 		return;
 	}
 	shape s;
 	s.box(2,2,79,24);
-	s.line_hor(3,78,4,196);
-	s.line_hor(3,78,22,196);
+	s.horizontal_line(3,78,4,196);
+	s.horizontal_line(3,78,22,196);
 	gotoxy(71,1);
 	cout <<"<0>=Exit";
 	textbackground(BLUE);
@@ -1357,7 +1364,7 @@ void account :: transaction(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7ENTER CORRECTLY                       ");
+			cprintf("ENTER CORRECTLY                       ");
 			getch();
 		}
 	} while (!valid);
@@ -1379,7 +1386,7 @@ void account :: transaction(void)
 		{
 			valid = 0;
 			gotoxy(5,23);
-			cprintf("\7INVALID DATA ENTERED               ");
+			cprintf("INVALID DATA ENTERED               ");
 			getch();
 		}
 	} while (!valid);
@@ -1405,12 +1412,12 @@ void account :: transaction(void)
 	else
 		t_balance = (t_balance - t_amount) + t_interest;
 	ini.update_balance(t_accno,t_balance);
-	add_to_file(t_accno,d1,m1,y1,t_tran,t_type,t_interest,t_amount,t_balance);
+	write_to_file(t_accno,d1,m1,y1,t_tran,t_type,t_interest,t_amount,t_balance);
 }
 
 
 //function to delete account
-void account :: close_account(void)
+void passbook :: close_account(void)
 {
 	clrscr();
 	char t_acc[10];
@@ -1425,18 +1432,18 @@ void account :: close_account(void)
 	if (t_accno == 0)
 		return;
 	clrscr();
-	initial ini;
+	bank ini;
 	if (!ini.found_account(t_accno))
 	{
 		gotoxy(5,5);
-		cout <<"\7Account not found";
+		cout <<"Account not found";
 		getch();
 		return;
 	}
 	shape s;
 	s.box(2,2,79,24);
-	s.line_hor(3,78,4,196);
-	s.line_hor(3,78,22,196);
+	s.horizontal_line(3,78,4,196);
+	s.horizontal_line(3,78,22,196);
 	gotoxy(71,1);
 	cout <<"<0>=Exit";
 	textbackground(BLUE);
@@ -1472,7 +1479,7 @@ void account :: close_account(void)
 	ini.delete_account(t_accno);
 	delete_account(t_accno);
 	gotoxy(5,20);
-	cout <<"\7Record Deleted";
+	cout <<"Record Deleted";
 	gotoxy(5,23);
 	cout <<"Press any key to continue...";
 	getch();
@@ -1480,7 +1487,7 @@ void account :: close_account(void)
 
 
 //displays exit box
-void control::exit_menu(){
+void ui::exit_menu(){
 	startup_box();
 	gotoxy(19, 12);
 	textcolor(GREEN); textbackground(BLACK);
@@ -1500,7 +1507,7 @@ void control::exit_menu(){
 
 void main(){
 
-	control a;
+	ui a;
 	a.startup_menu();
 	a.login_box();
 	a.main_menu();
